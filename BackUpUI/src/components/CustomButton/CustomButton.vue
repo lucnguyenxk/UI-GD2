@@ -1,0 +1,125 @@
+<template>
+  <div class="custom-btn" v-bind:style="{'background-color': backgroundColor}" :class="{heightClass, 'disabled-class': disableBoolean}" @click="buttonClick">
+    <div class="custom-btn-icon" v-if="iconClass != ''">
+      <div :class="iconClass"></div>
+    </div>
+    <div class="custom-btn-text noselect">{{ text }}</div>
+    <q-tooltip v-if="toolTipText != null && disableBoolean == false"
+    anchor="bottom middle"
+    self="top middle"
+    :offset="[5, 5]">
+      {{toolTipText}}
+    </q-tooltip>
+  </div>
+</template>
+
+<style scoped>
+.disabled-class {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.custom-btn {
+  display: flex;
+  border: 1px solid #ccc;
+  height: 25px;
+  box-sizing: border-box;
+  /* background-color: #ffffff; */
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+  cursor: pointer;
+}
+
+.custom-btn:hover {
+  border-color: #0071c1;
+  background-color: #E4F2EA;
+}
+
+.custom-btn-text {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.height-24 {
+  height: 24px;
+}
+
+.height-25 {
+  height: 25px;
+}
+
+.height-28 {
+  height: 28px;
+}
+
+.insert-icon {
+  background: url(../../assets/img/iconSprite.png) no-repeat;
+  background-position: 0 -2648px;
+  width: 16px;
+  height: 16px;
+}
+
+.delete-icon {
+  background: url(../../assets/img/iconSprite.png) no-repeat;
+  background-position: 0 -2680px;
+  width: 16px;
+  height: 16px;
+}
+
+.report-icon {
+  background: url(../../assets/img/viewEmail.png) no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.help-icon {
+  background: url(../../assets/img/iconSprite.png) no-repeat;
+  background-position: 0 -1600px;
+  width: 16px;
+  height: 16px;
+}
+
+.save-icon {
+  background: url(../../assets/img/Save16.png) no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.saveAndAdd-icon {
+  background: url(../../assets/img/SaveAdd16.png) no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.cancel-icon {
+  background: url(../../assets/img/Disable16.png) no-repeat;
+  width: 16px;
+  height: 16px;
+}
+</style>
+
+<script>
+export default {
+  props: {
+    text: {type: String, default: ""},
+    toolTipText: {type: String, default: null},
+    heightClass: {type: String, default: "height-28"},
+    iconClass: {type: String, default: ""},
+    backgroundColor : {type:String, default: "#ffffff"},
+    disableBoolean: {type: Boolean, default: false}
+  },
+  methods: {
+    /**
+    * Xử lý sự kiện click ở Parent component
+    * @author: lntung
+    * CreatedDate: 10/07/2021
+    */
+    buttonClick() {
+      this.$emit("click");
+    }
+  }
+}
+</script>

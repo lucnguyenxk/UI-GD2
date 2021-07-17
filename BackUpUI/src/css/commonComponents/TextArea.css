@@ -1,0 +1,21 @@
+.custom-textarea {
+  resize: none;
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #c1c1c1 #d9d9d9 #d9d9d9;
+  font-size: 12px;
+  transition: box-shadow .3s;
+}
+
+.custom-textarea:hover {
+  box-shadow: 0 0px 10px 0 rgb(0 0 0 / 10%);
+}
+
+.custom-textarea:focus {
+  outline: none;
+  border-color: #0071c1;
+  box-shadow: 0 0px 5px 0 rgb(0 0 0 / 10%);
+}

@@ -1,0 +1,84 @@
+    .Paginate{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 24px;
+}
+.btn-Paginate{
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    box-sizing: border-box;
+    border: 0;
+    margin-right: 12px;
+    background-color: #fff;
+    cursor: pointer;
+}
+.btn-FirstPage{
+    background: url(../../assets/img/page-first.png) no-repeat;
+    background-position: center;
+}
+.btn-PrevPage{
+    background: url(../../assets/img/prevPage.png) no-repeat;
+    background-position: center;
+}
+.btn-NextPage{
+    background: url(../../assets/img/page-next.png) no-repeat;
+    background-position: center;
+}
+.btn-LastPage{
+    background: url(../../assets/img/page-last.png) no-repeat;
+    background-position: center;
+}
+.btn-Refresh{
+    background: url(../../assets/img/refresh.png) no-repeat;
+    background-position: center;
+}
+.input-PageNumber{
+    width: 48px;
+    height: 24px;
+}
+.PageNumber{
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
+    outline: none;
+    border-radius:3px;
+    text-align: center;
+    border: 1px solid #d0d0d0;
+}
+.PageNumber:focus{
+    outline: none;
+    border-color:#636dde ;
+}
+.text-Paginate{
+    padding: 0px 4px;
+    margin-right: 6px;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 300;
+    color: #4b4c4c;
+    //font-family: roboto,Tahoma,sans-serif!important;
+}
+.select-PageSize{
+    width: 50px;
+    height: 24px;
+    box-sizing: border-box;
+    padding-left: 4px;
+    border: 1px solid #d0d0d0;
+    font-size: 13px;
+    border-radius: 3px;
+}
+.select-PageSize:focus{
+    outline: none;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
