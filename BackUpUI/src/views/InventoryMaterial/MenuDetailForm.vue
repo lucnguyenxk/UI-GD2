@@ -1,7 +1,7 @@
 <template>
   <div class="detail-form">
     <div class="detail-header">
-      <div class="detail-header-title noselect">Thêm thực đơn</div>
+      <div class="detail-header-title noselect">{{this.titleDetailForm}}</div>
       <div class="detail-header-close">
         <div class="header-icon-close" @click="clickCloseButton"></div>
       </div>
@@ -25,7 +25,7 @@
               <div class="menuName-detail importData">
                 <div class="label-input menuName">Tên món <span class="require">(*)</span></div>
                 <div class="inputBox">
-                  <input type="text" class="inputValue" v-model="menu.menuName" @input="isMissingMenuName=false" :class="{'boderErr':(menu.menuName !=undefined && ( menu.menuName.trim().length==0))||isMissingMenuName==true}" >
+                  <input type="text" class="inputValue" v-model="menu.menuName" @input="isMissingMenuName=false" :class="{'boderErr':(menu.menuName !=undefined && ( menu.menuName.trim().length==0))||isMissingMenuName==true}" ref="focusMenuName">
                 </div>
                 <div class="error-input" :class="{'isMissing': (menu.menuName ==undefined ||( menu.menuName.trim().length!=0) )&&isMissingMenuName==false}">
                   <q-tooltip anchor="bottom middle" self="top middle" :offset="[10, 10]">Trường này không được để trống</q-tooltip>
@@ -75,16 +75,23 @@
               <div class="menuName-detail importData money">
                 <div class="label-input menuName">Giá bán <span class="require">(*)</span></div>
                 <div class="inputBox">
-                  <input type="number" class="inputValue"  v-model.number="menu.priceSell" @blur="checkValueInput('PriceSell')" :class="{'boderErr': ((menu.priceSell!=undefined ) && (menu.priceSell<0||menu.priceSell.length==0))||isMissingPriceSell==true}"  @input="isMissingPriceSell=false">
+                  <!-- <input type="number" class="inputValue"  v-model.number="menu.priceSell" @blur="checkValueInput('PriceSell')" :class="{'boderErr': ((menu.priceSell!=undefined ) && (menu.priceSell<0||menu.priceSell.length==0))||isMissingPriceSell==true}"  @input="isMissingPriceSell=false"> -->
+                    <MoneyFormat
+                  :valueMoney.sync="menu.priceSell"
+                  :errValue="((menu.priceSell!=undefined ) && (menu.priceSell<0||menu.priceSell.length==0))"  
+                  />
                 </div>
-                <div class="error-input" :class="{'isMissing':(menu.priceSell ==undefined || (menu.priceSell >=0&&menu.priceSell.length!=0 ) )&&isMissingPriceSell==false }">
-                  <q-tooltip anchor="bottom middle" self="top middle" :offset="[10, 10]">Trường này không được để trống</q-tooltip>
+                <div class="error-input" :class="{'isMissing':(menu.priceSell ==undefined || (menu.priceSell >=0&&menu.priceSell.length!=0 ) ) }">
+                  <q-tooltip anchor="bottom middle" self="top middle" :offset="[10, 10]">Giá bán phải lớn hơn hoặc bằng 0</q-tooltip>
                 </div>
               </div>
               <div class="menuName-detail importData money">
                 <div class="label-input menuName">Giá vốn </div>
                 <div class="inputBox">
-                  <input type="number" class="inputValue" v-model.number="menu.priceCost">
+                  <!-- <input type="number" class="inputValue" v-model.number="menu.priceCost"> -->
+                  <MoneyFormat
+                  :valueMoney.sync="menu.priceCost"
+                />
                 </div>
               </div>
               <div class="menuName-detail importData description">
@@ -112,6 +119,7 @@
                   <input type="checkbox" class="isShowOnMenu" name="isShowOnMenu" v-model="menu.isShowOnMenu">
                   <label for="isShowOnMenu">Không hiển thị trên thực đơn</label>
                 </div>
+                <input @focus="focusTransshipment" class="focusTransshipment" style=" width : 0; height : 0; border: none"/>
               </div>
             </div>
             <div class="detail-body-mid-right">
@@ -173,7 +181,13 @@
                       @iconBlueAddOnClick="iconBlueAddOnClick"
                       />
                       </td>
-                    <td class="detail-td left-boder-detail"><input type="number" v-model.number="service.priceAdd" class="inputPriceAdd"></td>
+                    <td class="detail-td left-boder-detail">
+                      <!-- <input type="number" v-model.number="service.priceAdd" class="inputPriceAdd"> -->
+                      <MoneyFormat
+                      :valueMoney.sync="service.priceAdd"
+                      class="inputPriceAdd"
+                      />
+                    </td>
                   </tr>
                 </tbody>
               </table> 
@@ -306,6 +320,7 @@ import ProcessAreaForm from '../processAreaForm/ProcessAreaForm.vue'
 import ServiceHobbyForm from '../serviceHobbyForm/ServiceHobbyForm.vue'
 import DialogWarning from '../../components/DialogConfirmClose/dialogWarning/DialogWarning.vue'
 import axios from 'axios';
+import MoneyFormat from '../../components/moneyFormat/MoneyFormat.vue'
 export default {
   components: {
     CustomButton,
@@ -317,8 +332,10 @@ export default {
     ProcessAreaForm,
     ServiceHobbyForm,
     DialogWarning,
+    MoneyFormat,
   },
   props:{
+    
     /**
     *đói tượng thực đơn
     * @param: {}
@@ -349,6 +366,7 @@ export default {
 
   },
   created() {
+    this.$nextTick(() => this.$refs.focusMenuName.focus())
     this.getMenuGroup();
     this.getUnit(); 
     this.getPocessArea();
@@ -356,6 +374,13 @@ export default {
 
     if (this.serviceHobby != "") {
       this.deleteUnitDisable = false;
+    }
+
+    if(this.mode=="Add"){
+      this.titleDetailForm="Thêm món mới";
+    }
+    else if(this.mode =="Update") {
+      this.titleDetailForm="Sửa món"
     }
 
 
@@ -399,6 +424,7 @@ export default {
         this.addMore =false;
         var isValid= this.validateMenu();
         if(isValid){
+          this.menu.isShowOnMenu = !this.menu.isShowOnMenu;
           if(this.mode=="Add"){
             this.addNewMenu();
           }
@@ -419,6 +445,7 @@ export default {
       this.addMore = true;
       var isValid = this.validateMenu();
       if(isValid){
+        this.menu.isShowOnMenu = !this.menu.isShowOnMenu;
         if(this.mode=="Add"){
             this.addNewMenu();
           }
@@ -426,11 +453,24 @@ export default {
             this.updateMenu();
           }
           this.showOptionDetail="General"
+          //this.$refs.focusMenuName.focus();
+          this.$nextTick(() => this.$refs.focusMenuName.focus())
       }
 
 
     },
     //#endregion
+
+    /**
+    *xử lí autôFocus
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
+   focusTransshipment(){
+     this.$refs.focusMenuName.focus();
+   },
 
     //#region : đóng form cảnh báo thay đối dữ liệu
     closeDialogCloseForm(option){
@@ -832,6 +872,14 @@ export default {
         console.log(res);
       })
     },
+
+    /**
+    *Lấy toàn bộ sở thích phục vụ
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
     getServiceHobby(){
       axios.get("https://localhost:44313/api/v1/ServiceHobbys")
       .then(res=>{
@@ -841,6 +889,13 @@ export default {
         console.log(res);
       })
     },
+    /**
+    *gọi api thêm mới thực đơn
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
     addNewMenu(){
       axios.post("https://localhost:44313/api/v1/Menus",this.menu)
       .then(res=>{
@@ -857,6 +912,14 @@ export default {
         console.log(res);
       })
     },
+
+    /**
+    *Gọi Api cập nhật thực đơn
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
     updateMenu(){
       axios.put("https://localhost:44313/api/v1/Menus/"+this.menu.menuId,this.menu)
       .then(res=>{
@@ -885,10 +948,27 @@ export default {
         this.deleteUnitDisable = true;
       }
     },
+
+    /**
+    *Kiểm tra sự thay đổi của mode để thay đổi tiêu đề
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
+    mode(){
+      if(this.mode=="Add"){
+      this.titleDetailForm="Thêm món mới";
+      }
+      else if(this.mode =="Update") {
+        this.titleDetailForm="Sửa món"
+      }
+    }
     
   },
   data() {
     return {
+      valueMoneytest:1000,
       /**
       *Biến kiểm tra trường thông tin tên thực đơn có bị bỏ trống hay không
       * @param: {}
@@ -1081,6 +1161,17 @@ export default {
   * CreatedDate: 16/07/2021
   */
  serviceHobby:{},
+
+/**
+*Tiêu đề của form chi tiết
+* @param: {}
+* @return: {}
+* Createdby:ndluc 
+* CreatedDate: 18/07/2021
+*/
+titleDetailForm :"",
+
+
 
     }
   },

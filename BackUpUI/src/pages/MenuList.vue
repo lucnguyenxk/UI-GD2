@@ -85,9 +85,9 @@
           <thead>
             <tr>
               <th class="border-right-none border-left-none">
-                <div class="th-title">
+                <div class="th-title" @click="sortByPropertyName('MenuCode')">
                   <div class="th-title-text">Mã món</div>
-                  <div class="th-title-sort"></div>
+                  <div class="th-title-sort" :class="{'sort-desc' : this.propertyNameSort=='MenuCode' && this.typeSort=='Desc','sort-asc': this.propertyNameSort=='MenuCode' && this.typeSort=='Asc'}"></div>
                 </div>
                 <div class="th-search">
                   <div class="th-search-type">
@@ -105,9 +105,9 @@
                 </div>
               </th>
               <th class="border-right-none">
-                <div class="th-title">
+                <div class="th-title" @click="sortByPropertyName('MenuName')">
                   <div class="th-title-text">Tên món</div>
-                  <div class="th-title-sort"></div>
+                  <div class="th-title-sort" :class="{'sort-desc' : this.propertyNameSort=='MenuName' && this.typeSort=='Desc','sort-asc': this.propertyNameSort=='MenuName' && this.typeSort=='Asc'}"></div>
                 </div>
                 <div class="th-search">
                   <div class="th-search-type">
@@ -126,9 +126,9 @@
               </th>
               
               <th class="border-right-none">
-                <div class="th-title">
+                <div class="th-title" @click="sortByPropertyName('MenuGroupName')">
                   <div class="th-title-text">Nhóm thực đơn</div>
-                  <div class="th-title-sort"></div>
+                  <div class="th-title-sort" :class="{'sort-desc' : this.propertyNameSort=='MenuGroupName' && this.typeSort=='Desc','sort-asc': this.propertyNameSort=='MenuGroupName' && this.typeSort=='Asc'}"></div>
                 </div>
                 <div class="th-search">
                   <div class="th-search-type">
@@ -146,9 +146,9 @@
                 </div>
               </th>
               <th class="border-right-none">
-                <div class="th-title">
+                <div class="th-title" @click="sortByPropertyName('UnitName')">
                   <div class="th-title-text">Đơn vị tính</div>
-                  <div class="th-title-sort"></div>
+                  <div class="th-title-sort" :class="{'sort-desc' : this.propertyNameSort=='UnitName' && this.typeSort=='Desc','sort-asc': this.propertyNameSort=='UnitName' && this.typeSort=='Asc'}"></div>
                 </div>
                 <div class="th-search">
                   <div class="th-search-type">
@@ -166,9 +166,9 @@
                 </div>
               </th>
               <th class="border-right-none">
-                <div class="th-title">
+                <div class="th-title" @click="sortByPropertyName('PriceSell')">
                   <div class="th-title-text">Giá bán</div>
-                  <div class="th-title-sort"></div>
+                  <div class="th-title-sort" :class="{'sort-desc' : this.propertyNameSort=='PriceSell' && this.typeSort=='Desc','sort-asc': this.propertyNameSort=='PriceSell' && this.typeSort=='Asc'}"></div>
                 </div>
                 <div class="th-search">
                   <div class="th-search-type">
@@ -213,7 +213,12 @@
               <td class="border-right-none">{{menu.menuName}}</td>
               <td class="border-right-none">{{menu.menuGroupName}}</td>
               <td class="border-right-none">{{menu.unitName}}</td>
-              <td class="border-right-none">{{menu.priceSell}}</td>
+              <td class="border-right-none">
+                <MoneyFormat
+                :valueMoney.sync="menu.priceSell"
+                :disableInput="true"
+                />
+              </td>
               <td class="border-right-none"><div class="checkbox-showOnMenu"><input type="checkbox" v-model="menu.isShowOnMenu" disabled></div></td>
             </tr>
           </tbody>
@@ -229,6 +234,7 @@
           :lastPage="this.lastPage"
           :listPageSize="this.listPageSize"
           @getPageNumber="getPageNumber"
+          :refresh="this.refresh"
            />
         </div>
         <div class="bottom-right-side">
@@ -254,6 +260,8 @@ import DialogDeleteConfirm from "../components/DialogConfirmClose/DeleteDialog.v
 import axios from 'axios'
 import { types } from 'util';
 import { type } from 'os';
+
+import MoneyFormat from '../components/moneyFormat/MoneyFormat.vue'
 //import ColumnResizer from "../components/Table/ColumnResizer.js"
 export default {
   components: {
@@ -264,7 +272,8 @@ export default {
     Paginate,
     MenuDetailForm,
     AutoComplete,
-    DialogDeleteConfirm
+    DialogDeleteConfirm,
+    MoneyFormat,
   },
   methods: {
 
@@ -280,12 +289,16 @@ export default {
       this.menu = {
         menuCode: this.menu.menuCode,
         listServiceHobby: [],
-        priceSell : 0
+        priceSell : 0,
+        priceCost:0,
+        isShowOnMenu: false,
       }
       this.cloneMenu = {
         menuCode: this.menu.menuCode,
         listServiceHobby: [],
-        priceSell : 0
+        priceSell : 0,
+        priceCost:0,
+        isShowOnMenu:false
       }
       
       this.detailDialogShow = true;
@@ -329,7 +342,11 @@ export default {
      * @author: ndluc
      * CreatedDate: 08/07/2021
      */
-    refreshPage() {},
+    refreshPage() {
+      this.refresh = !this.refresh;
+      this.currentPage = 1;
+      this.getPaging();
+    },
     /**
     *nhấn đúp vào bản ghi
     * @param: {}
@@ -341,6 +358,47 @@ export default {
         this.menu.menuId= menuID;
         this.editMenu();
     },
+    /**
+    *click vào các tiêu đề để lựa chọn sort
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
+    sortByPropertyName(propertyName){
+      this.propertyNameSort=propertyName;
+      this.getDataSort(this.filterByMenuCode,propertyName);
+      this.getDataSort(this.filterByMenuName,propertyName);
+      this.getDataSort(this.filterByUnit,propertyName);
+      this.getDataSort(this.filterByMenuGroupName,propertyName);
+      this.getDataSort(this.filterByPriceSell,propertyName);
+      this.getPaging();
+    },
+    /**
+    *Lấy dữ liệu sort cho từng trường
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
+   getDataSort(obbjectSort,propertyName){
+     if(obbjectSort.filterProperty == propertyName){
+       obbjectSort.isSort = true;
+       if(obbjectSort.sortType==""||obbjectSort.sortType=="Desc"){
+         obbjectSort.sortType="Asc"
+         this.typeSort="Asc"
+       }
+       else{
+         obbjectSort.sortType="Desc"
+         this.typeSort="Desc"
+       }
+     }
+     else {
+       obbjectSort.isSort=false;
+       obbjectSort.sortType="";
+     }
+
+   },
 
     /**
      * Sự kiện click vào 1 dòng trên bảng : chọn bản ghi
@@ -561,6 +619,8 @@ export default {
                this.getNewCode();
             }
             this.cloneMenu.menuCode = this.menu.menuCode;
+            this.menu.isShowOnMenu = !this.menu.isShowOnMenu;
+            this.cloneMenu.isShowOnMenu = this.menu.isShowOnMenu;
             
             this.detailDialogShow = true;
           }
@@ -715,7 +775,7 @@ export default {
         filterValue : "",
         filterType : 1,
         isSort : false,
-        sortType : "1"
+        sortType : ""
       },
 
       /**
@@ -727,7 +787,7 @@ export default {
         filterValue : "",
         filterType : 1,
         isSort : false,
-        sortType : "1"
+        sortType : ""
       },
 
       /**
@@ -739,7 +799,7 @@ export default {
         filterValue : "",
         filterType : 1,
         isSort : false,
-        sortType : "1"
+        sortType : ""
       },
 
       /**
@@ -751,7 +811,7 @@ export default {
         filterValue : "",
         filterType : 1,
         isSort : false,
-        sortType : "1"
+        sortType : ""
       },
 
       /**
@@ -763,7 +823,7 @@ export default {
         filterValue : null,
         filterType : 6,
         isSort : false,
-        sortType : "1"
+        sortType : ""
       },
 
       /**
@@ -830,8 +890,33 @@ export default {
      * CreatedDate: 15/07/2021
      */
     inforToDelete :"",
-    newCode: null,
+    /**
+    *lựa chọn thuộc tính để sort
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 18/07/2021
+    */
+   propertyNameSort: "" ,
+   /**
+   *lựa chọn kiểu sort
+   * @param: {}
+   * @return: {}
+   * Createdby:ndluc 
+   * CreatedDate: 18/07/2021
+   */
+  typeSort :"",
+
+    /**
+  *Biến xác nhận nạp lại dữ liệu
+  * @param: {}
+  * @return: {}
+  * Createdby:ndluc 
+  * CreatedDate: 18/07/2021
+  */
+  refresh : false
     }
+    
   },
   created(){
       this.getPaging();
@@ -860,6 +945,9 @@ export default {
   justify-content: space-between;
   display: flex;
 }
+.page-header .custom-btn {
+  height:28px !important;
+}
 
 .page-header .title {
   height: 28px;
@@ -879,7 +967,7 @@ export default {
 .page-content {
   box-sizing: border-box;
   width: 100%;
-  margin-top: 8px;
+  margin-top: 12px;
   height: calc(100% - 36px);
 }
 
@@ -913,5 +1001,21 @@ export default {
 }
 .selectedRecord{
   background-color: #e2eff8;
+}
+
+.sort-desc{
+  background: url("../assets/img/sort_desc.png") no-repeat 0 0;
+  width: 16px;
+  height: 16px;
+}
+.sort-asc{
+  background: url("../assets/img/sort_asc.png") no-repeat 0 0;
+  width: 16px;
+  height: 16px;
+}
+.th-title{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

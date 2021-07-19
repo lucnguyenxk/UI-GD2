@@ -10,7 +10,7 @@
           <div class="text-Paginate"> trên {{this.lastPage}}</div>
           <button class="btn-Paginate btn-NextPage" @click="nextPage()" ></button>
           <button class="btn-Paginate btn-LastPage" @click="toLastPage()"></button>
-          <button class="btn-Paginate btn-Refresh" @click="refresh()"></button>
+          <button class="btn-Paginate btn-Refresh" @click="refreshPage()"></button>
           <select class="select-PageSize" v-model ="pageSize" @change="getPageSize()" >
             <option v-for="selectPageSize in listPageSize" :key="selectPageSize" :value="selectPageSize">{{selectPageSize}}</option>
           </select>
@@ -25,11 +25,14 @@
 
 
 <script>
+
 export default {
+  
   props: {
     lastPage: {type: Number ,default :1},
     listPageSize: {type: Array, default: [
     ]},
+    refresh : {type : Boolean,default : false}
   },
   data() {
     return {
@@ -109,9 +112,14 @@ export default {
       /**
        * load lại trang
        */
-      refresh () {
+      refreshPage() {
         this.$emit('getPageNumber', this.currentPage, this.pageSize);
       }
   },
+  watch:{
+    refresh(){
+      this.currentPage=1;
+    }
+  }
 }
 </script>

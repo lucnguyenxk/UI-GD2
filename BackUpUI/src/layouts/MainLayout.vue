@@ -14,7 +14,7 @@
       >
         <div class="overflow-menu">
             <div class="menu-item noselect">
-              <router-link to="/menu-list">
+              <router-link to="/menu-list" class ="menu-link">
                 <div class="menu-item-logo"></div>
                 <div class="menu-item-text">Thực đơn</div>
               </router-link>
@@ -68,6 +68,14 @@
 
 .menu-item-logo {
   margin-left: 12px;
+  background: url("../assets/img/menu-icon.png") no-repeat 0 0;
+  width: 22px;
+  height: 24px;
+}
+.menu-link{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-item-text {

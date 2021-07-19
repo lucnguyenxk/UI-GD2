@@ -40,7 +40,8 @@
 </template>
 
 
-<script>
+<script  >
+
 import axios from 'axios';
 import CustomButton from '../../components/CustomButton/CustomButton.vue'
 export default {
@@ -55,7 +56,7 @@ export default {
     * Click vào nút hủy bỏ
     * @author: ndluc
     * CreatedDate: 10/07/2021
-    */
+    */  
     clickCancel() {
       this.$emit("closeUnitForm","cancel");
     },

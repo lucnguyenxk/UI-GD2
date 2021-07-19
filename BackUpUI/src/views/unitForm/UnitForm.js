@@ -1,7 +1,7 @@
 import axios from 'axios';
 import CustomButton from '../../components/CustomButton/CustomButton.vue'
-export default {
-    name:Test,
+import UnitForm from './UnitForm';
+export default UnitForm({
     props:{
         unit:{type :Object}
     },
@@ -57,4 +57,4 @@ export default {
          missingUnitName: false,
       }
   }
-}
+})
