@@ -34,59 +34,12 @@
 </template>
 
 <style scoped>
-.main-layout {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.full-screen {
-  width: 100%;
-  height: 100%;
-}
-
-.navbar-color {
-  background-color: #0087BE!important;
-}
-
-.menu-item {
-  height: 40px;
-  line-height: 40px;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  text-decoration: none !important;
-  color: #fff;
-  border-bottom: 1px solid #016087;
-  border-top: 1px solid #016087;
-  cursor: pointer;
-}
-
-.menu-item:hover {
-  background-color: #eb7728;
-}
-
-.menu-item-logo {
-  margin-left: 12px;
-  background: url("../assets/img/menu-icon.png") no-repeat 0 0;
-  width: 22px;
-  height: 24px;
-}
-.menu-link{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.menu-item-text {
-  margin-left: 10px;
-  font-size: 13px;
-}
+@import url("MainLayout.css");
 </style>
 
 <script>
-import TheHeader from './TheHeader.vue';
-import TheContent from './TheContent.vue';
+import TheHeader from '../theHeader/TheHeader.vue';
+import TheContent from '../theContent/TheContent.vue';
 
 export default {
   components: {

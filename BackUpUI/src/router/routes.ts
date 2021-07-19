@@ -3,7 +3,7 @@ import { RouteConfig } from 'vue-router';
 const routes: RouteConfig[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('src/layouts/mainLayout/MainLayout.vue'),
     children: [
       { path: '/menu-list', component: () => import('src/pages/MenuList.vue') }
     ]
@@ -11,10 +11,7 @@ const routes: RouteConfig[] = [
 
   // Always leave this as last one,
   // but you can also remove it
-  {
-    path: '*',
-    component: () => import('pages/Error404.vue')
-  }
+  
 ];
 
 export default routes;

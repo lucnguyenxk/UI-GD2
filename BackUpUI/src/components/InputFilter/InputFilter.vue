@@ -62,22 +62,5 @@ export default {
 </script>
 
 <style scoped>
-.input-filter {
-    height: 24px;
-    line-height: 24px;
-    border: 1px solid #ccc;
-    padding-left: 5px;
-    padding-right: 5px;
-    width: 100%;
-    outline: none;
-}
-
-.input-filter:focus {
-  border-color: #0071c1;
-  box-shadow: 0px 4px 8px #c0c0c0;
-}
-
-.input-filter .has-icon {
-  padding-right: 28px;
-}
+@import url("InputFilter.css");
 </style>

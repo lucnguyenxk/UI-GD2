@@ -30,7 +30,7 @@
         ref="option"
         v-for="(item, index) in data_filter"
         :key="index"
-        class="option"
+        class="optionTable"
         @click="OptionOnClick(item)"
         :class="{
           'is-selecting': index == index_Selecting,
@@ -38,7 +38,15 @@
         }"
         :id="index"
       >
-        {{ item[label_key] }}
+        <div class="option-lable-value">
+          {{ item[label_key] }}
+        </div> 
+        <div class="option-value-priceAdd">
+          <money-format
+          :disableInput="true"
+          :valueMoney="item[label2]"
+          />
+        </div>
       </div>
       <div class="empty" v-if="is_empty">Không có dữ liệu hiển thị</div>
     </div>
@@ -46,8 +54,12 @@
 </template>
 
 <script>
+import MoneyFormat from '../../moneyFormat/MoneyFormat.vue'
 import vClickOutside from "v-click-outside";
 export default {
+  components:{
+    MoneyFormat,
+  },
   directives: {
     clickOutside: vClickOutside.directive,
   },
@@ -106,7 +118,9 @@ export default {
     * Createdby:ndluc 
     * CreatedDate: 15/07/2021
     */
-   label2:{},
+   label2:{
+     type : String
+   },
 
    /**
    *label lấy giá trị 3
@@ -337,25 +351,30 @@ export default {
      */
     HideOptions() {
       // debugger // eslint-disable-line no-debugger
-      if(this.selected ==false)
-      {
-        var is_availble = false;
-        this.options.forEach((option) => {
-          if (option[this.label_key] == this.label_value) {
-            // debugger // eslint-disable-line no-debugger
-            this.$emit('update:valueNumber1',option[this.label1]);
-            this.$emit('update:valueNumber2',option[this.label2]);
-            this.$emit('update:valueNumber3',option[this.label3]);
-            is_availble = true;
+      try{
+        if(this.selected ==false)
+        {
+          var is_availble = false;
+          this.options.forEach((option) => {
+            if (option[this.label_key] == this.label_value) {
+              // debugger // eslint-disable-line no-debugger
+              this.$emit('update:valueNumber1',option[this.label1]);
+              this.$emit('update:valueNumber2',option[this.label2]);
+              this.$emit('update:valueNumber3',option[this.label3]);
+              is_availble = true;
+            }
+          });
+          if(!is_availble){
+            this.$emit('update:valueNumber1',this.label_value);
           }
-        });
-        if(!is_availble){
-          this.$emit('update:valueNumber1',this.label_value);
         }
+        this.$emit("focusOut");
+        this.isShow = false;
+        this.index_Selecting = -1;
       }
-      this.$emit("focusOut");
-      this.isShow = false;
-      this.index_Selecting = -1;
+      catch(error){
+        console.error();
+      }
     },
 
 
@@ -363,8 +382,12 @@ export default {
      * Sự kiện click vào autocomplete
      */
     autocompleteOnclick() {
-      this.$emit("p_click");
-      this.FilterData();
+      try {
+        this.$emit("p_click");
+        this.FilterData();
+      } catch (error) {
+        console.error();
+      }
     },
     /**
      * Hàm tìm kiếm
@@ -398,199 +421,16 @@ export default {
     },
     //#endregion
 
-    Test() {
-      alert(1);
-    },
   },
   created() {
     this.selected = true;
     this.GetDefaultValue();
   },
   mounted() {
-    // this.GetDefaultValue();
-    // console.log(this.model_value);
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
-/********************
-* Declare
-**********************/
-
-// chiều dài của thẻ:
-$width: 100%;
-// Chiều cao của thẻ:
-$height: 25px;
-// Background Default:
-$background-default: #ffffff;
-// Background Hover:
-$background-hover: #d6e8f6;
-// Background Selected:
-$background-selected: blue;
-// Màu chữ default:
-$color-default: #000000;
-// Màu chữ hover:
-$color-hover: #000;
-// border chung
-$border: 1px solid #babec5;
-// border khi focus vào
-$border-focus: 1px solid blue;
-// Icon toggle:
-$icon-toggle: url("");
-
-/**************************************
-* Mixin Method
-***************************************/
-// Thuộc tính icon toggle cho thẻ
-
-@mixin Icon {
-  background: url("../../../assets/img/dropdown-icon.png") no-repeat -51px -9px;
-	width: 8px;
-	height: 4px;
-}
-
-// Size Đồng bộ chung
-@mixin common-size {
-  width: $width;
-  height: $height;
-}
-// Size
-@mixin Size($w, $h) {
-  width: $w !important;
-  height: $h;
-}
-
-// Flex Box (Center, Center)
-@mixin Flex-Center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/*************************
-* autocomplete CSS
-***************************/
-.autocomplete {
-  @include common-size;
-  position: relative;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-
-  /* ------- Select_label----------- */
-  .select-label {
-    position: absolute;
-    @include Size(100%, 100%);
-    @include Flex-Center;
-
-    .label-value {
-      position: absolute;
-      display: flex;
-      align-items: center;
-      padding-left: 8px;
-      box-sizing: border-box;
-      left: 0;
-      color: $color-default;
-      @include Size(100%, 100%);
-        border-color: #c1c1c1 #d9d9d9 #d9d9d9 !important;
-        border-width: 1px;
-        border-style: solid;
-      
-      &:focus {
-        outline: none;
-        border: $border-focus;
-      }
-    }
-    .icon-item {
-      position: absolute;
-      right: 23px;
-      top: 1px;
-      height: 22px !important;
-      border-top-right-radius: 0px;
-      border-bottom-right-radius: 0px;
-      cursor: pointer;
-      @include Flex-Center;
-      @include Size(22px, 100%);
-      
-      .icon-toggle {
-        @include Icon;
-      }
-    }
-    .icon-blue-add{
-        height: 22px;
-        width: 22px;
-        top : 1px;
-        position: absolute;
-        right: 1px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .icon-add{
-            background : url("../../../assets/img/add-blue-icon.png") no-repeat 0 0;
-            width: 15px;
-            height: 15px;
-        }
-    }
-  }
-
-  /* -------- Select_options---------- */
-  .select-options {
-    position: absolute;
-    @include Size(100%, auto) ;
-    top: $height + 2px;
-    left: -1px;
-    background: $background-default;
-    border-radius: 2px;
-    z-index: 10;
-    max-height: 150px;
-    overflow-y: auto;
-    // max-height: 250px;
-    // overflow-y: auto;
-    border: 1px solid #d3d3d3;
-    box-shadow: 0 1px 1px 1px #d3d3d3;
-    // box-sizing: border-box;
-    /* -------- option ---------- */
-    .option {
-      @include Size(100%, $height);
-      width: calc(100%);
-      @include Flex-Center;
-      justify-content: unset;
-      text-align: left;
-      border-radius: 2px;
-      color: $color-default;
-      cursor: pointer;
-      padding-left: 16px;
-      &:hover {
-        background: $background-hover;
-        color: $color-hover;
-      }
-    }
-    // Thằng nào đang được chọn
-    .is-selecting {
-      background: $background-hover;
-      color: $color-hover;
-    }
-    .empty {
-      @include Size(100%, $height);
-      @include Flex-Center;
-      background: #f7f7f7;
-      border-radius: 2px;
-    }
-  }
-}
-
-.selected {
-  background-color: #d6e8f6 !important;
-  color: #000 !important;
-}
-
-.validate {
-  border-color: red !important;
-}
-.emptyValue{
-  border: 1px solid red !important ;
-}
+@import url("AutoCompleteTable.scss");
 </style>

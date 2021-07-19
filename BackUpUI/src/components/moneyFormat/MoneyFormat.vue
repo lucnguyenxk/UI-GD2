@@ -70,10 +70,10 @@ export default {
             * CreatedDate: 19/07/2021
             */
             money:{
-                decimal: ".",
+                decimal: ",",
                 thousands: ".",
                 prefix: " ",
-                precision:0,
+                precision:1,
                 masked: false, // doesn't work with directive
                 // Waiting on https://github.com/vuejs-tips/v-money/pull/51 to be merged
                 allowBlank: true,
@@ -89,7 +89,12 @@ export default {
         * CreatedDate: 19/07/2021
         */
         getValueMoney(){
-            this.$emit("update:valueMoney",this.displayValue);
+            try {
+                this.$emit("update:valueMoney",this.displayValue);
+            } catch (error) {
+                console.error();
+            }
+            
         }
     },
     watch:{
@@ -108,27 +113,5 @@ export default {
 </script>
 
 <style>
-.input-money{
-    width: 100%;
-    height: 100%;
-}
-.v-money{
-    width: 100%;
-    height: 100%;
-    outline: none;
-    text-align-last: right;
-}
-.v-money-input{
-    width: 100%;
-    height: 100%;
-}
-.boderErr{
-    border: 1px solid red !important;
-}
-.input-money input:disabled{
-    color: #000;
-    background: none;
-    border: none;
-    opacity: 1 !important;
-}
+@import url("MoneyFormat.css");
 </style>

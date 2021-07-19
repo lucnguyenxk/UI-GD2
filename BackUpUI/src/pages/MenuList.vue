@@ -1,5 +1,8 @@
 <template>
-  <div class="inventory-material">
+  <div class="inventory-material" 
+  @keydown.ctrl.49.prevent.stop.exact="insert" 
+  @keydown.ctrl.83.prevent.stop.exact="closeDetailFormTest"
+  tabindex="0" ref="setFocusPage">  
     <!-- #region Detail Form-->
     <q-dialog
       v-model="detailDialogShow"
@@ -21,6 +24,14 @@
     />
     </q-dialog>
     <!-- #endregion -->
+
+    <div class="update-infor">
+      <div class="title-update">Vui lòng cập nhật thông tin nhà hàng để chúng tôi phục vụ quý khách tốt hơn.</div>
+      <div class ="option-update">
+        <div class="icon-remindUpdate"></div>
+        <div class="link-title-update">Cập nhật ngay</div>
+      </div>
+    </div>
 
     <!-- #region header -->
     <div class="page-header">
@@ -219,7 +230,7 @@
                 :disableInput="true"
                 />
               </td>
-              <td class="border-right-none"><div class="checkbox-showOnMenu"><input type="checkbox" v-model="menu.isShowOnMenu" disabled></div></td>
+              <td class="border-right-none"><div class="checkbox-showOnMenu"><input type="checkbox" v-model="menu.isShowOnMenu" style="pointer-events: none; opacity: 0.5" ></div></td>
             </tr>
           </tbody>
           <!-- #endregion -->
@@ -238,7 +249,7 @@
            />
         </div>
         <div class="bottom-right-side">
-          Hiển thị {{(this.currentPage-1)*this.pageSize +1}} - {{getIndexOfReCord()}} trên {{this.totalRecord}} Kết quả    
+          Hiển thị {{getIndexOfFirstRecord()}} - {{getIndexOfLastReCord()}} trên {{this.totalRecord}} Kết quả    
         </div>
       </div>
       <!-- #endregion -->
@@ -255,8 +266,8 @@ import FilterType from "../components/FilterType/FilterType.vue";
 import InputFilter from "../components/InputFilter/InputFilter.vue";
 import Paginate from "../components/Paginate/Paginate.vue";
 import MenuDetailForm from "../views/InventoryMaterial/MenuDetailForm.vue"
-import AutoComplete from "../components/Autocomplete/Autocomplete.vue"
-import DialogDeleteConfirm from "../components/DialogConfirmClose/DeleteDialog.vue"
+import AutoComplete from "../components/Autocomplete/autoComplete/Autocomplete.vue"
+import DialogDeleteConfirm from "../components/DialogConfirmClose/dialogDelete/DeleteDialog.vue"
 import axios from 'axios'
 import { types } from 'util';
 import { type } from 'os';
@@ -276,6 +287,13 @@ export default {
     MoneyFormat,
   },
   methods: {
+    insert(){
+      console.log("test thử thôi")
+    },
+    closeDetailFormTest(){
+      console.log(1);
+      this.detailDialogShow=false;
+    },
 
     //#region các sự kiện click, dbclic để lựa chọn
     /**
@@ -284,26 +302,31 @@ export default {
      * CreatedDate: 08/07/2021
      */
       insertMaterial() {
-      this.mode = "Add"
-      this.getNewCode();
-      this.menu = {
-        menuCode: this.menu.menuCode,
-        listServiceHobby: [],
-        priceSell : 0,
-        priceCost:0,
-        isShowOnMenu: false,
-      }
-      this.cloneMenu = {
-        menuCode: this.menu.menuCode,
-        listServiceHobby: [],
-        priceSell : 0,
-        priceCost:0,
-        isShowOnMenu:false
-      }
-      
-      this.detailDialogShow = true;
-      
-       
+        try {
+          this.mode = "Add"
+          this.getNewCode();
+          this.menu = {
+            menuCode: this.menu.menuCode,
+            listServiceHobby: [],
+            priceSell : 0,
+            priceCost:0,
+            isShowOnMenu: false,
+            unitId:0,
+          }
+          this.cloneMenu = {
+            menuCode: this.menu.menuCode,
+            listServiceHobby: [],
+            priceSell : 0,
+            priceCost:0,
+            isShowOnMenu:false,
+            unitId:0
+          }
+          
+          this.detailDialogShow = true;
+          
+        } catch (error) {
+          console.error();
+        }
     },
 
     /**
@@ -312,9 +335,13 @@ export default {
      * CreatedDate: 08/07/2021
      */
     cloneMaterial() {
-      this.mode ="Add",
-      this.getMenuById(this.idRecordSelect);
-      
+      try{
+        this.mode ="Add",
+        this.getMenuById(this.idRecordSelect);
+      }
+      catch(error){
+        console.error();
+      }
     },
 
     /**
@@ -323,9 +350,13 @@ export default {
      * CreatedDate: 08/07/2021
      */
     editMenu() {
-      this.mode="Update"
-      this.getMenuById(this.idRecordSelect);
-       this.detailDialogShow = true;
+      try {
+        this.mode="Update"
+        this.getMenuById(this.idRecordSelect);
+        this.detailDialogShow = true;
+      } catch (error) {
+        console.error();
+      }
     },
 
     /**
@@ -343,9 +374,15 @@ export default {
      * CreatedDate: 08/07/2021
      */
     refreshPage() {
-      this.refresh = !this.refresh;
-      this.currentPage = 1;
-      this.getPaging();
+      try{
+        this.refresh = !this.refresh;
+        this.currentPage = 1;
+        this.getPaging();
+      }
+      catch(error){
+        console.error();
+      }
+      
     },
     /**
     *nhấn đúp vào bản ghi
@@ -355,8 +392,13 @@ export default {
     * CreatedDate: 15/07/2021
     */
     rowOndbClick(menuID){
+      try {
         this.menu.menuId= menuID;
         this.editMenu();
+      } catch (error) {
+        console.error();
+      }
+        
     },
     /**
     *click vào các tiêu đề để lựa chọn sort
@@ -448,8 +490,7 @@ export default {
      * created by ndluc(13/07/2021)
      */
     getValueInput(inputValue,nameProperty){
-        console.log(inputValue);
-        console.log(nameProperty);
+      try {
         if(nameProperty =="MenuCode"){
           this.filterByMenuCode.filterValue = inputValue;
         }
@@ -465,8 +506,11 @@ export default {
         else if(nameProperty == "PriceSell"){
           this.filterByPriceSell.filterValue = parseInt(inputValue);
         }
-        console.log(this.listFilter);
         this.getPaging();
+      } catch (error) {
+        console.error();
+      }
+        
 
     },
     /**
@@ -474,25 +518,27 @@ export default {
      * created by ndluc(13/07/2021)
      */
     getTypeFilter(typevalue,nameProperty){
-      console.log("type" + typevalue);
-      console.log(nameProperty);
-      if(nameProperty =="MenuCode"){
-          this.filterByMenuCode.filterType = typevalue;
-        }
-        else if(nameProperty =="MenuName"){
-          this.filterByMenuName.filterType = typevalue;
-        }
-        else if(nameProperty == "MenuGroupName"){
-          this.filterByMenuGroupName.filterType = typevalue;
-        }
-        else if(nameProperty == "UnitName"){
-          this.filterByUnit.filterType = typevalue;
-        }
-        else if(nameProperty == "PriceSell"){
-          this.filterByPriceSell.filterType = typevalue;
-        }
-        console.log(this.listFilter);
-        this.getPaging();
+      try {
+          if(nameProperty =="MenuCode"){
+            this.filterByMenuCode.filterType = typevalue;
+          }
+          else if(nameProperty =="MenuName"){
+            this.filterByMenuName.filterType = typevalue;
+          }
+          else if(nameProperty == "MenuGroupName"){
+            this.filterByMenuGroupName.filterType = typevalue;
+          }
+          else if(nameProperty == "UnitName"){
+            this.filterByUnit.filterType = typevalue;
+          }
+          else if(nameProperty == "PriceSell"){
+            this.filterByPriceSell.filterType = typevalue;
+          }
+          this.getPaging();
+      } catch (error) {
+        console.error();
+      }
+          
     },
     //#endregion
 
@@ -514,7 +560,8 @@ export default {
         this.menu = {
           menuCode : this.menu.menuCode,
           listServiceHobby:[],
-          priceSell:0
+          priceSell:0,
+          unitId:0
         };
         
       }
@@ -538,16 +585,29 @@ export default {
 
 
     /**
-     * Lấy thứ tự của bản ghi 
+     * Lấy thứ tự của bản ghi cuối
      * created by ndluc(13/07/2021)
      */
-    getIndexOfReCord(){
+    getIndexOfLastReCord(){
       if(this.currentPage < this.lastPage){
         return (this.currentPage-1)*this.pageSize + this.pageSize;
       }
       else {
         return (this.currentPage-1)*this.pageSize + (this.totalRecord-(this.lastPage-1)*this.pageSize)
       }
+    },
+    /**
+    *lấy vị trí bản ghi đầu của trang
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 19/07/2021
+    */
+    getIndexOfFirstRecord(){
+      if(this.totalRecord>0){
+        return (this.currentPage-1)*this.pageSize +1
+      }
+      else return 0
     },
     /**
      * lấy dữ liệu phân trang : trang hiện tại, kích cỡ trang
@@ -558,6 +618,34 @@ export default {
         this.pageSize = pageSize;
         this.getPaging();
     },    
+
+    //#region : disable phím tắt mặc định chorme
+    /**
+    *disable các phím tắt của chorme
+    * @param: {}
+    * @return: {}
+    * Createdby:ndluc 
+    * CreatedDate: 19/07/2021
+    */
+    disabledDefaultKey() {
+      document.addEventListener("keydown", function (e) {
+      e = e || window.event;
+      if (e.ctrlKey) {
+        var c = e.which || e.keyCode;
+        switch (c) {
+          case 83://Block Ctrl+S
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+          case 49:
+            e.preventDefault();
+            e.stopPropagation();
+            break;
+        }
+      }
+      });
+    },
+    //#endregion
   //#region : gọi dữ liệu từ server
     /**
     *Lấy dữ liệu có phân trang, lọc , tìm kiếm
@@ -919,6 +1007,8 @@ export default {
     
   },
   created(){
+      this.$nextTick(() => this.$refs.setFocusPage.focus())
+      this.disabledDefaultKey();
       this.getPaging();
       this.createdListObjectFilter();
   },
@@ -934,88 +1024,6 @@ export default {
 };
 </script>
 <style scoped>
-.inventory-material {
-  width: 100%;
-  height: 100%;
-}
+@import url("MenuList.css");
 
-.page-header {
-  width: 100%;
-  height: 28px;
-  justify-content: space-between;
-  display: flex;
-}
-.page-header .custom-btn {
-  height:28px !important;
-}
-
-.page-header .title {
-  height: 28px;
-  line-height: 28px;
-  box-sizing: border-box;
-  font-size: 22px;
-  color: #000000;
-  font-weight: normal;
-}
-
-.report-icon {
-  background: url(../assets/img/viewEmail.png) no-repeat;
-  width: 16px;
-  height: 16px;
-}
-
-.page-content {
-  box-sizing: border-box;
-  width: 100%;
-  margin-top: 12px;
-  height: calc(100% - 36px);
-}
-
-.table-toolbar {
-  height: 27px;
-  line-height: 27px;
-  box-sizing: border-box;
-  border: 1px solid #d9d9d9;
-  background-color: #ededed;
-  display: flex;
-  align-items: center;
-}
-
-.table-content {
-  width: 100%;
-  height: calc(100% - 28px - 27px);
-  overflow: auto;
-}
-
-.bottom-content {
-  display: flex;
-  width: 100%;
-  height: 30px;
-  justify-content: space-between;
-  border: 1px solid #d9d9d9 ;
-  align-items: center;
-}
-.bottom-right-side{
-  padding-right: 15px;
-  font-size: 13px;
-}
-.selectedRecord{
-  background-color: #e2eff8;
-}
-
-.sort-desc{
-  background: url("../assets/img/sort_desc.png") no-repeat 0 0;
-  width: 16px;
-  height: 16px;
-}
-.sort-asc{
-  background: url("../assets/img/sort_asc.png") no-repeat 0 0;
-  width: 16px;
-  height: 16px;
-}
-.th-title{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 </style>

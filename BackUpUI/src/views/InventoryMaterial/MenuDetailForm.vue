@@ -63,9 +63,8 @@
                   value_key="unitId"
                   label_key="unitName"
                   :model_value_prop.sync="menu.unitId"
-                  :checkValueEmpty="true"
+                  :checkValueEmpty="menu.unitId==null"
                   @iconBlueAddOnClick="iconBlueAddOnClick"
-                  
                   />
                 </div>
                 <div class="error-input" :class="{'isMissing':!this.isMissingUnit ||menu.unitId!=null}">
@@ -146,7 +145,7 @@
           <!-- #endregion -->
           <!-- #region ServiceHobby-->
           <div class="service-hobby-detail" :class="{'isDisplayOptionDetail' : this.showOptionDetail!='ServiceHobby'}">
-            <div class="serviceHobby-Tittle"> Món ăn: </div>
+            <div class="serviceHobby-Tittle"> Món ăn: {{menu.menuName}} </div>
             <div class="intro-ServiceHobby">
               <div class="imgIntro-ServiceHobby"></div>
               <div class="intro-ServiceHobby-Text"> Ghi lại những sở thích của khách hàng giúp nhân viên phục vụ chọn nhanh order. <br> VD: không cay/ít hành/thêm phomai...</div>
@@ -273,6 +272,7 @@
     <UnitForm
     :unit="this.unit"
     @closeUnitForm="closeUnitForm"
+    @openWarningForm="openWarningForm"
     />
     </q-dialog>
     <q-dialog
@@ -311,8 +311,8 @@
 
 <script>
 import CustomButton from '../../components/CustomButton/CustomButton.vue';
-import DialogConfirmClose from '../../components/DialogConfirmClose/DialogConfirmClose.vue';
-import AutocompleteAndAdd from '../../components/Autocomplete/AutocompleteAndAdd.vue';
+import DialogConfirmClose from '../../components/DialogConfirmClose/dialogConfirmClose/DialogConfirmClose.vue';
+import AutocompleteAndAdd from '../../components/Autocomplete/autoCompleteAndAdd/AutocompleteAndAdd.vue';
 import AutocompleteTable from '../../components/Autocomplete/autocompleteOptionTable/AutoCompleteTable.vue'
 import MenuGroupForm from '../menuGroupForm/MenuGroupForm.vue'
 import UnitForm from '../unitForm/UnitForm.vue'
@@ -403,14 +403,21 @@ export default {
     * CreatedDate: 09/07/2021
     */
     closeForm() {
-      // Reset giá trị data về mặc định
-      this.resetData();
-      // Đóng các form con
-      this.closeConfirmDialog();
+      try{
+        // Reset giá trị data về mặc định
+        this.resetData();
+        // Đóng các form con
+        this.closeConfirmDialog();
 
-      this.addMore = false;
-      // Thực hiện đóng
-      this.$emit("closeDetailForm",this.addMore);
+        this.addMore = false;
+        // Thực hiện đóng
+        this.$emit("closeDetailForm",this.addMore);
+      }
+      catch(error){
+        console.error();
+      }
+        
+        
     },
 
     /**
@@ -421,17 +428,26 @@ export default {
     * CreatedDate: 15/07/2021
     */
     saveMenu(){
-        this.addMore =false;
-        var isValid= this.validateMenu();
-        if(isValid){
-          this.menu.isShowOnMenu = !this.menu.isShowOnMenu;
-          if(this.mode=="Add"){
-            this.addNewMenu();
+      try {
+          this.addMore =false;
+          var setTimeOut =this;
+          setTimeout(function(){
+          var isValid= setTimeOut.validateMenu();
+          if(isValid){
+          setTimeOut.menu.isShowOnMenu = !setTimeOut.menu.isShowOnMenu;
+          if(setTimeOut.mode=="Add"){
+            setTimeOut.addNewMenu();
           }
-          else if(this.mode=="Update"){
-            this.updateMenu();
+          else if(setTimeOut.mode=="Update"){
+            setTimeOut.updateMenu();
           }
         }
+        },30)
+      } catch (error) {
+        console.error();
+      }
+         
+        
     },
 
     /**
@@ -442,21 +458,28 @@ export default {
     * CreatedDate: 15/07/2021
     */
     saveAndAddMenu(){
-      this.addMore = true;
-      var isValid = this.validateMenu();
-      if(isValid){
-        this.menu.isShowOnMenu = !this.menu.isShowOnMenu;
-        if(this.mode=="Add"){
-            this.addNewMenu();
+      try{
+        this.addMore = true;
+        var setTimeOut =this;
+        setTimeout(function(){
+            var isValid = setTimeOut.validateMenu();
+            if(isValid){
+              setTimeOut.menu.isShowOnMenu = !setTimeOut.menu.isShowOnMenu;
+              if(setTimeOut.mode=="Add"){
+                  setTimeOut.addNewMenu();
+                }
+            else if(setTimeOut.mode=="Update"){
+                setTimeOut.updateMenu();
+            }
+              setTimeOut.showOptionDetail="General"
+              //this.$refs.focusMenuName.focus();
+              setTimeOut.$nextTick(() => setTimeOut.$refs.focusMenuName.focus())
           }
-          else if(this.mode=="Update"){
-            this.updateMenu();
-          }
-          this.showOptionDetail="General"
-          //this.$refs.focusMenuName.focus();
-          this.$nextTick(() => this.$refs.focusMenuName.focus())
+        },30)
       }
-
+      catch(error){
+        console.error();
+      }
 
     },
     //#endregion
@@ -528,29 +551,34 @@ export default {
     */
     clickCloseButton() {
       // Kiểm tra thay đổi dữ liệu
-      if(this.menu.listServiceHobby.length != this.cloneMenu.listServiceHobby.length){
-        this.showCloseDialog= true;
-      }
-      else{
-          var checkChange = this.checkObjectChange(this.cloneMenu,this.menu);
-          if(!checkChange){
-            var countOfList = this.menu.listServiceHobby.length;
-            for(var i=0; i<countOfList;i++){
-              var checkListChange = this.checkObjectChange(this.cloneMenu.listServiceHobby[i],this.menu.listServiceHobby[i])
-              if(checkListChange){
-                checkChange=true;
-                break;
+      try{
+        if(this.menu.listServiceHobby.length != this.cloneMenu.listServiceHobby.length){
+          this.showCloseDialog= true;
+        }
+        else{
+            var checkChange = this.checkObjectChange(this.cloneMenu,this.menu);
+            if(!checkChange){
+              var countOfList = this.menu.listServiceHobby.length;
+              for(var i=0; i<countOfList;i++){
+                var checkListChange = this.checkObjectChange(this.cloneMenu.listServiceHobby[i],this.menu.listServiceHobby[i])
+                if(checkListChange){
+                  checkChange=true;
+                  break;
+                }
               }
             }
-          }
-          // Nếu có thay đổi dữ liệu thì hiển thị confirm dialog
-          // Không có thay đổi thì thoát form
-          if (checkChange) {
-            this.showCloseDialog = true;
-          }
-          else {
-            this.closeForm();
-          }
+            // Nếu có thay đổi dữ liệu thì hiển thị confirm dialog
+            // Không có thay đổi thì thoát form
+            if (checkChange) {
+              this.showCloseDialog = true;
+            }
+            else {
+              this.closeForm();
+            }
+        }
+      }
+      catch(error){
+        console.error();
       }
       
     },
@@ -563,19 +591,24 @@ export default {
     * CreatedDate: 16/07/2021
     */
    iconBlueAddOnClick(nameOfObjectAdd){
-     if(nameOfObjectAdd=="menuGroupName"){
-       this.showMenuGroupForm =  true;
+     try {
+        if(nameOfObjectAdd=="menuGroupName"){
+          this.showMenuGroupForm =  true;
+        }
+        else if(nameOfObjectAdd=="unitName"){
+          this.showUnitForm=true;
+        }
+        else if(nameOfObjectAdd=="processAreaName")
+        {
+          this.showProcessAreaForm= true;
+        }
+        else if(nameOfObjectAdd=="serviceHobbyName"){
+          this.showServiceHobbyForm = true
+        }
+     } catch (error) {
+       console.error();
      }
-     else if(nameOfObjectAdd=="unitName"){
-       this.showUnitForm=true;
-     }
-     else if(nameOfObjectAdd=="processAreaName")
-     {
-       this.showProcessAreaForm= true;
-     }
-     else if(nameOfObjectAdd=="serviceHobbyName"){
-       this.showServiceHobbyForm = true
-     }
+        
    },
   //#region : xử lí sự kiện đóng mở form cảnh báo lỗi
    /**
@@ -705,12 +738,15 @@ export default {
      * created by ndluc(12/07/2021)
      */
     addNewRowServiceHobby(){
+      try {
         var newServiceHobby = {
           serviceHobbyName : "",
           priceAdd : 0,
         }
         this.menu.listServiceHobby.push(newServiceHobby);
-        console.log(this.menu.listServiceHobby);
+      } catch (error) {
+        
+      }
     },
 
     /**
@@ -731,7 +767,6 @@ export default {
      */
     getIndexServiceHobbySelected(index){
         this.indexServiceHobby = index;
-        console.log(index);
     },
 
     //#region : validate đối tượng , kiểm tra trống 
@@ -777,7 +812,8 @@ export default {
           this.isMissingPriceSell =  true;
           correct = false
         }
-        if(this.menu.unitId ==undefined || this.menu.unitId == null){
+        if(this.menu.unitId ==undefined || this.menu.unitId == null||this.menu.unitId==0){
+          this.menu.unitId=null;
           this.isMissingUnit = true;
           correct= false;
         }
@@ -905,6 +941,7 @@ export default {
         else if(res.data.statusCode==400){
           this.openWarningForm(res.data.userMessage)
           this.showOptionDetail="General"
+          this.menu.isShowOnMenu= !this.menu.isShowOnMenu;
         }
       
       })
@@ -929,6 +966,7 @@ export default {
         else if(res.data.statusCode==400){
           this.openWarningForm(res.data.userMessage);
           this.showOptionDetail="General"
+          this.menu.isShowOnMenu = !this.menu.isShowOnMenu;
         }
       })
       .catch(res =>{

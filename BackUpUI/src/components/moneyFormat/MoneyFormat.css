@@ -1,0 +1,23 @@
+.input-money{
+    width: 100%;
+    height: 100%;
+}
+.v-money{
+    width: 100%;
+    height: 100%;
+    outline: none;
+    text-align-last: right;
+}
+.v-money-input{
+    width: 100%;
+    height: 100%;
+}
+.boderErr{
+    border: 1px solid red !important;
+}
+.input-money input:disabled{
+    color: #000;
+    background: none;
+    border: none;
+    opacity: 1 !important;
+}

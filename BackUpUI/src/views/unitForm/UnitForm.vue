@@ -2,6 +2,9 @@
   <div class="form-add-unit">
     <div class="dialog-close-header">
       <div class="dialog-close-title noselect">CUKCUK - Quản lý nhà hàng</div>
+      <div class="detail-header-close">
+        <div class="header-icon-close" @click="clickCancel"></div>
+      </div>
     </div>
     <div class="dialog-add-content">
       <div class="menuName-detail add-data-unit">
@@ -87,6 +90,9 @@ export default {
           if(res.data.statusCode==200){
               this.$emit("closeUnitForm","succed")
           }
+          else if(res.data.statusCode==400){
+            this.$emit("openWarningForm",res.data.userMessage)
+          }
         })
         .catch(res =>{
           console.log(res);
@@ -103,113 +109,5 @@ export default {
 }
 </script>
 <style scoped>
-.form-add-unit {
-  width: 420px;
-  height: 175px;
-  border: 5px solid #0072bc;
-  background-color: #fff;
-  font-size: 13px;
-  font-style: normal;
-}
-
-.dialog-close-header {
-  position: relative;
-  background-color: #0072bc;
-  width: 100%;
-  height: 25px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.dialog-close-title {
-  color: #fff;
-  font-size: 13px;
-  font-weight: normal;
-  padding-left: 4px;
-  padding-top: 3px;
-}
-
-.dialog-add-content {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: calc(100% - 38px);
-}
-
-.dialog-main-content {
-  display: flex;
-  width: 100%;
-  height: 52px;
-  padding: 10px;
-}
-
-
-.dialog-content-text {
-  margin-left: 12px;
-  line-height: 32px;
-  font-size: 13px;
-  font-weight: normal;
-}
-
-.dialog-bottom-content {
-  position: absolute;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 36px;
-  padding: 6px;
-}
-.btn-form-add-right{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.add-data-unit{
-  display: flex;
-  height: 25px;
-  margin-top: 8px;
-  margin-right: 5px;
-  display: flex;
-  align-items: center;
-  padding-left: 8px;
-}
-.label-input-add{
-    min-width:125px !important;
-}
-.require{
-  color: red;
-}
-.inputBox{
-  width: 100%;
-  height: 100%;
-}
-.inputValue{
-  width: 100%;
-  height: 100%;
-  outline: none;
-  color: #000000;
-  padding: 3px 5px 3px!important;
-  font-size: 12px;
-  border-color: #c1c1c1 #d9d9d9 #d9d9d9;
-  border-width: 1px;
-  border-style: solid;
-}
-.error-input{
-  height: 100%;
-  min-width: 26px;
-  background: url(../../assets/img/err.png) no-repeat;
-  background-position: center;
-}
-.description{
-  height: 50px;
-}
-.boderErr{
-  border: 1px solid red;
-}
-.displayNone{
-  display: none;
-}
-
+@import url("UnitForm.css");
 </style>

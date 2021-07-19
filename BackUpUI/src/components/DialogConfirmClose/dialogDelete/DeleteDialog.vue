@@ -23,69 +23,11 @@
 </template>
 
 <style scoped>
-.dialog-delete {
-  width: 400px;
-  height: 123px;
-  border: 5px solid #0072bc;
-  background-color: #fff;
-}
-
-.dialog-delete-header {
-  position: relative;
-  background-color: #0072bc;
-  width: 100%;
-  height: 25px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.dialog-delete-title {
-  color: #fff;
-  font-size: 13px;
-  font-weight: normal;
-  padding-left: 4px;
-  padding-top: 3px;
-}
-
-.dialog-delete-content {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: calc(100% - 25px);
-}
-
-.dialog-main-content {
-  display: flex;
-  width: 100%;
-  height: 52px;
-  padding: 10px;
-}
-
-.dialog-icon-question {
-  background: url(../../assets/img/icon-question-32.png) no-repeat;
-  min-width: 32px;
-  height: 32px;
-}
-
-.dialog-content-text {
-  margin-left: 12px;
-  font-size: 13px;
-  font-weight: normal;
-}
-
-.dialog-bottom-content {
-  position: relative;
-  bottom: 0;
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  height: 36px;
-  padding: 6px;
-}
+@import url("DeleteDialog.css");
 </style>
 
 <script>
-import CustomButton from '../CustomButton/CustomButton.vue'
+import CustomButton from '../../CustomButton/CustomButton.vue'
 export default {
   components: {
     CustomButton

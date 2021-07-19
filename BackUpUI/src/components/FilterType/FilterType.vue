@@ -16,7 +16,7 @@
         :key="index"
         @click="selectOption(option)"
       >
-        {{ option.text }}
+        {{option.text}}
       </div>
     </div>
   </div>
@@ -84,101 +84,6 @@ export default {
 
 
 <style scoped>
-/* .filter-type {
-  height: 24px;
-  line-height: 24px;
-  width: 24px;
-  background-color: #fff;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  font-weight: 400;
-}
-
-.filter-type:hover {
-  border-color: #eb7728;
-  background-color: #eef6fb;
-}
-
-.filter-type:active {
-  border-color: #0071c1 !important;
-}
-
-.filter-type-focus {
-  border-color: #0071c1 !important;
-  box-shadow: 0px 4px 8px #c0c0c0;
-}
-
-.filter-type-content {
-  border-radius: 3px;
-  font-weight: 400;
-  background-color: #fff;
-  box-shadow: 0px 4px 8px #c0c0c0;
-  z-index: 20;
-  position: absolute;
-  margin-top: 3px;
-  padding: 1px;
-  width: 120px;
-}
-
-.filter-type-content:focus {
-  outline: none;
-}
-
-.filter-type-item {
-  cursor: pointer;
-  height: 24px;
-  line-height: 24px;
-  padding-right: 12px;
-  padding-left: 16px;
-}
-
-.filter-type-item:hover {
-  background-color: #D7E9F4;
-} */
-.filter-type {
-  height: 24px;
-  line-height: 24px;
-	 width: 24px;
-	 background-color: #fff;
-	 text-align: center;
-	 cursor: pointer;
-	 border: 1px solid #dfe3e8;
-	 font-weight: 400;
-   box-sizing: border-box;
-}
- .filter-type ~ div {
-	 border-radius: 3px;
-	 font-weight: 400;
-	 background-color: #fff;
-	 box-shadow: 0px 4px 8px #c0c0c0;
-	 z-index: 20;
-	 position: absolute;
-	 margin-top: 1px;
-	 padding: 1px;
-}
- .filter-type ~ div:focus {
-	 outline: none;
-}
- .filter-type ~ div .dropdown-item {
-   display: flex;
-	 cursor: pointer;
-	 height: 30px;
-	 line-height: 30px;
-	 padding-right: 12px;
-	 padding-left: 16px;
-   justify-content: left;
-   min-width: 50px;
-}
- .filter-type ~ div .dropdown-item:hover {
-	 background-color: #6b6f9d;
-	 color: #fff;
-}
-.dropdown-content{
-  min-width: 170px !important;
-  width: fit-content;
-}
- 
+@import url("FilterType.css"); 
 </style>
 

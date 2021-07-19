@@ -1,0 +1,120 @@
+.update-infor{
+    width: 100%;
+    height: 42px;
+    background-color:#ffffb4 ;
+    border-bottom: 1px solid #ffe18c!important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .title-update{
+    padding-left: 8px;
+  }
+  .icon-remindUpdate{
+    background: url("../assets/img/iconRemindUpdate.png") no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  .option-update{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    color: #0973b9;
+  }
+  .inventory-material {
+    width: 100%;
+    height: 100%;
+    outline: none;
+  }
+  
+  .page-header {
+    width: 100%;
+    height: 28px;
+    justify-content: space-between;
+    display: flex;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    padding-top: 14px;
+  }
+  .page-header .custom-btn {
+    height:28px !important;
+  }
+  
+  .page-header .title {
+    height: 28px;
+    line-height: 28px;
+    box-sizing: border-box;
+    font-size: 22px;
+    color: #000000;
+    font-weight: normal;
+  }
+  
+  .report-icon {
+    background: url(../assets/img/viewEmail.png) no-repeat;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .page-content {
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 12px;
+    height: calc(100% - 82px);
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    padding-top: 14px;
+  }
+  
+  .table-toolbar {
+    height: 27px;
+    line-height: 27px;
+    box-sizing: border-box;
+    border: 1px solid #d9d9d9;
+    background-color: #ededed;
+    display: flex;
+    align-items: center;
+  }
+  
+  .table-content {
+    width: 100%;
+    height: calc(100% - 28px - 27px);
+    overflow: auto;
+  }
+  
+  .bottom-content {
+    display: flex;
+    width: 100%;
+    height: 30px;
+    justify-content: space-between;
+    border: 1px solid #d9d9d9 ;
+    align-items: center;
+  }
+  .bottom-right-side{
+    padding-right: 15px;
+    font-size: 13px;
+  }
+  .selectedRecord{
+    background-color: #e2eff8;
+  }
+  
+  .sort-desc{
+    background: url("../assets/img/sort_desc.png") no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+  }
+  .sort-asc{
+    background: url("../assets/img/sort_asc.png") no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+  }
+  .th-title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

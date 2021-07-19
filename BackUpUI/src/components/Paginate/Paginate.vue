@@ -1,16 +1,49 @@
 <template>
   <div>
       <div class="Paginate">
-          <button class="btn-Paginate btn-FirstPage" @click="firstPage()"></button>
-          <button class="btn-Paginate btn-PrevPage" @click="prevPage()"></button>
+          <button class="btn-Paginate btn-FirstPage" @click="firstPage()" :class="{'disabled-class': currentPage == 1}"></button>
+          <button class="btn-Paginate btn-PrevPage" @click="prevPage()" :class="{'disabled-class': currentPage == 1}"></button>
+          <div
+            style="
+              border-left: 1px solid #ccc;
+              height: 16px;
+              margin-top: 1px;
+              padding-right: 10px;
+            "
+          ></div>
           <div class="text-Paginate">Trang</div>
           <div class="input-PageNumber">
               <input type="number" class="PageNumber" v-model="currentPage" @keydown.enter="getPageNumber()"  @focusout="getPageNumber()">
           </div>
           <div class="text-Paginate"> trên {{this.lastPage}}</div>
-          <button class="btn-Paginate btn-NextPage" @click="nextPage()" ></button>
-          <button class="btn-Paginate btn-LastPage" @click="toLastPage()"></button>
+          <div
+            style="
+              border-left: 1px solid #ccc;
+              height: 16px;
+              margin-top: 1px;
+              padding-right: 10px;
+            "
+          ></div>
+          <button class="btn-Paginate btn-NextPage" @click="nextPage()" :class="{'disabled-class': currentPage == lastPage}"></button>
+          <button class="btn-Paginate btn-LastPage" @click="toLastPage()" :class="{'disabled-class': currentPage == lastPage}"></button>
+          <div
+            style="
+              border-left: 1px solid #ccc;
+              height: 16px;
+              margin-top: 1px;
+              padding-right: 10px;
+            "
+          ></div>
           <button class="btn-Paginate btn-Refresh" @click="refreshPage()"></button>
+          <div
+            style="
+              border-left: 1px solid #ccc;
+              height: 16px;
+              margin-top: 1px;
+              padding-right: 10px;
+            "
+          ></div>
+
           <select class="select-PageSize" v-model ="pageSize" @change="getPageSize()" >
             <option v-for="selectPageSize in listPageSize" :key="selectPageSize" :value="selectPageSize">{{selectPageSize}}</option>
           </select>
